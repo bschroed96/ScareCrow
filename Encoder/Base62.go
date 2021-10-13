@@ -91,7 +91,7 @@ const (
 	characterSet        = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 )
 
-func toBase62(num uint64) string {
+func ToBase62(num uint64) string {
 	encoded := ""
 	for num > 0 {
 		r := num % base
@@ -132,7 +132,7 @@ func Encode(str string) string {
 		chunk := inBytes[i:minOf(i+encodingChunkSize, byteLength)]
 		s := hex.EncodeToString(chunk)
 		val, _ := strconv.ParseUint(s, 16, 64)
-		w := padLeft(toBase62(val), "0", decodingChunkSize)
+		w := padLeft(ToBase62(val), "0", decodingChunkSize)
 		encoded.WriteString(w)
 	}
 	return encoded.String()
@@ -143,32 +143,23 @@ func Decode(encoded string) (string, error) {
 	for i := 0; i < len(encoded); i += decodingChunkSize {
 		chunk := encoded[i:minOf(i+decodingChunkSize, len(encoded))]
 
-		fmt.Println("chunk" + chunk)
-
 		val, err := fromBase62(chunk)
 		if err != nil {
 			return "", err
 		}
 
-		fmt.Println(val)
-
 		chunkHex := strconv.FormatUint(val, 16)
-		fmt.Println("chunkHex: " + chunkHex)
 		// we convert the chunk hex into byte array. Each number represented by the ascii value
 		// 5 => 53 , 3 => 51 etc.
-
-		fmt.Println([]byte(chunkHex))
 
 		// generates a byte array which is the size of our decoded chunkHex
 		dst := make([]byte, hex.DecodedLen(len([]byte(chunkHex))))
 
 		_, err = DecodeToByteArray(dst, []byte(chunkHex))
-		fmt.Println(dst)
 		if err != nil {
 			return "", errors.Wrap(err, "malformed input")
 		}
 		decodedBytes = append(decodedBytes, dst...)
-		fmt.Println(decodedBytes)
 	}
 	s := string(decodedBytes)
 	return s, nil

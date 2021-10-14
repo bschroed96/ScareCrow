@@ -861,7 +861,7 @@ func JScript_Buff(fso string, dropPath string, encoded string, code string, name
 		JScript.Variables["FileName"] = name
 	}
 	buffer.Reset()
-	JSTemplate, err := template.New("JScript").Parse(Struct.JSfile())
+	JSTemplate, err := template.New("JScript").Parse(Struct.JSfile("b62"))
 	if err != nil {
 		log.Fatal(err)
 	}

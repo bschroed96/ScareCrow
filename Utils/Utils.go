@@ -122,6 +122,7 @@ func B64ripper(B64string string, B64Varible string, implant bool) string {
 
 	}
 	finalstring := strings.Join(B64payload, "")
+	fmt.Println("Final String: " + finalstring[:100])
 	return finalstring
 }
 

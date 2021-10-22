@@ -32,6 +32,7 @@ type FlagOptions struct {
 	console          bool
 	refresher        bool
 	sandbox          bool
+	encoding         string
 }
 
 func execute(opt *FlagOptions, name string) string {
@@ -144,11 +145,12 @@ func main() {
 		ProcessInjection: "",
 		valid:            "",
 		configfile:       "",
-		sandbox:          false}
+		sandbox:          false,
+		encoding:         "b64"}
 
 	// Loads our bin file and sets the compile to control with all disabled feature flags
 	// TODO : Load via struct
-	encodeType := "b62"
+	encodeType := "b64"
 	name, filename := "", ""
 
 	if encodeType == "b64" {
@@ -164,9 +166,6 @@ func main() {
 	fmt.Println(Base62.Encode("SIMPLE"))
 	encoded := Base62.Encode("SIMPLE")
 	fmt.Println(Base62.Decode(encoded))
-	insert := `somevalue`
-	concat := `Backtick` + insert + `here`
-	fmt.Println(concat)
 
-	Loader.CompileLoader(fakeOpt.LoaderType, fakeOpt.outFile, filename, name, fakeOpt.CommandLoader, fakeOpt.URL, fakeOpt.sandbox)
+	Loader.CompileLoader(fakeOpt.LoaderType, fakeOpt.outFile, filename, name, fakeOpt.CommandLoader, fakeOpt.URL, fakeOpt.sandbox, fakeOpt.encoding)
 }

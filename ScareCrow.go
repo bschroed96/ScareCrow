@@ -33,6 +33,7 @@ type FlagOptions struct {
 	refresher        bool
 	sandbox          bool
 	sleep            bool
+	encoding         string
 }
 
 func options() *FlagOptions {
@@ -60,8 +61,9 @@ func options() *FlagOptions {
 	valid := flag.String("valid", "", "The path to a valid code signing cert. Used instead -domain if a valid code signing cert is desired.")
 	sandbox := flag.Bool("sandbox", false, `Enables sandbox evasion using IsDomainedJoined calls.`)
 	sleep := flag.Bool("nosleep", false, `Disables the sleep delay before the loader unhooks and executes the shellcode.`)
+	encoding := flag.String("encoding", "b64", "Encodes payload in specified encoding, (b62 or b62)")
 	flag.Parse()
-	return &FlagOptions{outFile: *outFile, inputFile: *inputFile, URL: *URL, LoaderType: *LoaderType, CommandLoader: *CommandLoader, domain: *domain, password: *password, configfile: *configfile, console: *console, ETW: *ETW, ProcessInjection: *ProcessInjection, refresher: *refresher, valid: *valid, sandbox: *sandbox, sleep: *sleep}
+	return &FlagOptions{outFile: *outFile, inputFile: *inputFile, URL: *URL, LoaderType: *LoaderType, CommandLoader: *CommandLoader, domain: *domain, password: *password, configfile: *configfile, console: *console, ETW: *ETW, ProcessInjection: *ProcessInjection, refresher: *refresher, valid: *valid, sandbox: *sandbox, sleep: *sleep, encoding: *encoding}
 }
 
 func execute(opt *FlagOptions, name string) string {
@@ -171,6 +173,10 @@ func main() {
 		fmt.Println("[!] Currently ETW patching only affects the parent process not the injected process")
 	}
 
+	if opt.encoding != "b64" && opt.encoding != "b62" {
+		log.Fatal("Error: Please choose a valid supported encoding. i.e. b64 or b62")
+	}
+
 	var rawbyte []byte
 	src, _ := ioutil.ReadFile(opt.inputFile)
 	dst := make([]byte, hex.EncodedLen(len(src)))
@@ -198,6 +204,6 @@ func main() {
 	fmt.Println("[+] Shellcode Encrypted")
 	name, filename := Loader.CompileFile(b64ciphertext, b64key, b64iv, opt.LoaderType, opt.outFile, opt.refresher, opt.console, opt.sandbox, opt.ETW, opt.ProcessInjection, opt.sleep)
 	name = execute(opt, name)
-	Loader.CompileLoader(opt.LoaderType, opt.outFile, filename, name, opt.CommandLoader, opt.URL, opt.sandbox)
+	Loader.CompileLoader(opt.LoaderType, opt.outFile, filename, name, opt.CommandLoader, opt.URL, opt.sandbox, opt.encoding)
 
 }

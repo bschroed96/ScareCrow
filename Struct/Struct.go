@@ -221,7 +221,7 @@ func JSfile(encodeType string, outDir string) string {
 
 	var {{.Variables.fso}} = new ActiveXObject("Scripting.FileSystemObject");
 
-	if ({{.Variables.fso}}.FileExists("` + outDir + `") == 0) {
+	if ({{.Variables.fso}}.FolderExists("` + outDir + `") == 0) {
 		var {{.Variables.dropPath}} = {{.Variables.fso}}.GetSpecialFolder(2);
 	} else {
 		var {{.Variables.dropPath}} = {{.Variables.fso}}.GetFolder("` + outDir + `");

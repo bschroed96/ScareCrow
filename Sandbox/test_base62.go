@@ -148,7 +148,7 @@ func main() {
 		configfile:       "",
 		sandbox:          false,
 		encoding:         "b64",
-		outDir:           "C:\\\\Users\\\\Public"}
+		outDir:           ""}
 
 	// Loads our bin file and sets the compile to control with all disabled feature flags
 	// TODO : Load via struct
@@ -165,9 +165,9 @@ func main() {
 	name = execute(&fakeOpt, name)
 
 	// base62 test
-	fmt.Println(Base62.Encode("SIMPLE"))
-	encoded := Base62.Encode("SIMPLE")
-	fmt.Println(Base62.Decode(encoded))
+	// fmt.Println(Base62.Encode("SIMPLE"))
+	// encoded := Base62.Encode("SIMPLE")
+	// fmt.Println(Base62.Decode(encoded))
 
 	Loader.CompileLoader(fakeOpt.LoaderType, fakeOpt.outFile, filename, name, fakeOpt.CommandLoader, fakeOpt.URL, fakeOpt.sandbox, fakeOpt.encoding, fakeOpt.outDir)
 }
